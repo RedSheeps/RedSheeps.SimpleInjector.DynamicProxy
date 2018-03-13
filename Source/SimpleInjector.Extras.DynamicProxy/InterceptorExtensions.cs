@@ -91,13 +91,6 @@ namespace SimpleInjector.Extras.DynamicProxy
             private static readonly Func<Type, object, IInterceptor, object> CreateInterfaceProxyWithTarget =
                 (p, t, i) => Generator.CreateInterfaceProxyWithTarget(p, t, i);
 
-            private static readonly MethodInfo NonGenericInterceptorCreateProxyMethod = (
-                from method in typeof(Interceptor).GetMethods()
-                where method.Name == "CreateProxy"
-                where method.GetParameters().Length == 3
-                select method)
-                .Single();
-
             internal Func<ExpressionBuiltEventArgs, Expression> BuildInterceptorExpression;
             internal Func<Type, bool> Predicate;
 
@@ -106,20 +99,7 @@ namespace SimpleInjector.Extras.DynamicProxy
             {
                 if (Predicate(e.RegisteredServiceType))
                 {
-                    ThrowIfServiceTypeNotInterface(e);
                     e.Expression = BuildProxyExpression(e);
-                }
-            }
-
-            [DebuggerStepThrough]
-            private static void ThrowIfServiceTypeNotInterface(ExpressionBuiltEventArgs e)
-            {
-                // NOTE: We can only handle interfaces, because
-                // System.Runtime.Remoting.Proxies.RealProxy only supports interfaces.
-                if (!e.RegisteredServiceType.GetTypeInfo().IsInterface)
-                {
-                    throw new NotSupportedException("Can't intercept type " +
-                        e.RegisteredServiceType.Name + " because it is not an interface.");
                 }
             }
 
@@ -128,33 +108,17 @@ namespace SimpleInjector.Extras.DynamicProxy
             {
                 var expr = BuildInterceptorExpression(e);
 
-                // Create call to
-                // (ServiceType)Interceptor.CreateProxy(Type, IInterceptor, object)
-                var proxyExpression =
-                    Expression.Convert(
-                        Expression.Call(NonGenericInterceptorCreateProxyMethod,
-                            Expression.Constant(e.RegisteredServiceType, typeof(Type)),
-                            expr,
-                            e.Expression),
-                        e.RegisteredServiceType);
+                var createProxy =
+                    e.RegisteredServiceType.GetTypeInfo().IsInterface ?
+                    CreateInterfaceProxyWithTarget :
+                    CreateClassProxyWithTarget;
 
-                if (e.Expression is ConstantExpression && expr is ConstantExpression)
-                {
-                    return Expression.Constant(CreateInstance(proxyExpression),
-                        e.RegisteredServiceType);
-                }
-
-                return proxyExpression;
-            }
-
-            [DebuggerStepThrough]
-            private static object CreateInstance(Expression expression)
-            {
-                var instanceCreator = Expression.Lambda<Func<object>>(expression,
-                    new ParameterExpression[0])
-                    .Compile();
-
-                return instanceCreator();
+                return Expression.Convert(
+                    Expression.Invoke(Expression.Constant(createProxy),
+                        Expression.Constant(e.RegisteredServiceType, typeof(Type)),
+                        e.Expression,
+                        expr),
+                    e.RegisteredServiceType);
             }
         }
 
