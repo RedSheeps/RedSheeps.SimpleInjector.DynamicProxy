@@ -9,9 +9,9 @@ namespace SimpleInjector.Extras.DynamicProxy
 {
     public static class InterceptorExtensions
     {
-        public static void InterceptWith<TInterceptor>(this Container container,
-        Func<Type, bool> predicate)
-        where TInterceptor : class, IInterceptor
+        public static void InterceptWith<TInterceptor>(
+            this Container container, Predicate<Type> predicate)
+            where TInterceptor : class, IInterceptor
         {
             container.Options.ConstructorResolutionBehavior.GetConstructor(typeof(TInterceptor));
 
@@ -25,8 +25,8 @@ namespace SimpleInjector.Extras.DynamicProxy
             container.ExpressionBuilt += interceptWith.OnExpressionBuilt;
         }
 
-        public static void InterceptWith(this Container container,
-            Func<IInterceptor> interceptorCreator, Func<Type, bool> predicate)
+        public static void InterceptWith(
+            this Container container, Predicate<Type> predicate, Func<IInterceptor> interceptorCreator)
         {
             var interceptWith = new InterceptionHelper()
             {
@@ -38,9 +38,8 @@ namespace SimpleInjector.Extras.DynamicProxy
             container.ExpressionBuilt += interceptWith.OnExpressionBuilt;
         }
 
-        public static void InterceptWith(this Container container,
-            Func<ExpressionBuiltEventArgs, IInterceptor> interceptorCreator,
-            Func<Type, bool> predicate)
+        public static void InterceptWith(
+            this Container container, Predicate<Type> predicate, Func<ExpressionBuiltEventArgs, IInterceptor> interceptorCreator)
         {
             var interceptWith = new InterceptionHelper()
             {
@@ -53,8 +52,8 @@ namespace SimpleInjector.Extras.DynamicProxy
             container.ExpressionBuilt += interceptWith.OnExpressionBuilt;
         }
 
-        public static void InterceptWith(this Container container,
-            IInterceptor interceptor, Func<Type, bool> predicate)
+        public static void InterceptWith(
+            this Container container, Predicate<Type> predicate, IInterceptor interceptor)
         {
             var interceptWith = new InterceptionHelper()
             {
@@ -65,7 +64,6 @@ namespace SimpleInjector.Extras.DynamicProxy
             container.ExpressionBuilt += interceptWith.OnExpressionBuilt;
         }
 
-        [DebuggerStepThrough]
         private static Expression BuildInterceptorExpression<TInterceptor>(
             Container container)
             where TInterceptor : class
@@ -91,10 +89,9 @@ namespace SimpleInjector.Extras.DynamicProxy
             private static readonly Func<Type, object, IInterceptor, object> CreateInterfaceProxyWithTarget =
                 (p, t, i) => Generator.CreateInterfaceProxyWithTarget(p, t, i);
 
-            internal Func<ExpressionBuiltEventArgs, Expression> BuildInterceptorExpression;
-            internal Func<Type, bool> Predicate;
+            internal Func<ExpressionBuiltEventArgs, Expression> BuildInterceptorExpression { private get; set; }
+            internal Predicate<Type> Predicate { private get; set; }
 
-            [DebuggerStepThrough]
             public void OnExpressionBuilt(object sender, ExpressionBuiltEventArgs e)
             {
                 if (Predicate(e.RegisteredServiceType))
@@ -103,7 +100,6 @@ namespace SimpleInjector.Extras.DynamicProxy
                 }
             }
 
-            [DebuggerStepThrough]
             private Expression BuildProxyExpression(ExpressionBuiltEventArgs e)
             {
                 var expr = BuildInterceptorExpression(e);
