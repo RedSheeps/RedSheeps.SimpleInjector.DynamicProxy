@@ -8,13 +8,13 @@ using Xunit;
 
 namespace SimpleInjector.Extras.DynamicProxy.Tests
 {
-    public class WhenPassingCreateInterceptorFuncAsArgumentFixture
+    public class WhenCreateArrayFuncArgumentFixture
     {
         [Fact]
-        public void WhenWeaving()
+        public void WhenSingleInstance()
         {
             var container = new Container();
-            container.InterceptWith(x => true, () => new IncrementInterceptor());
+            container.InterceptWith(x => true, () => new IInterceptor[] {new IncrementInterceptor()});
             container.Register<Target>();
             container.Verify();
 
@@ -23,11 +23,24 @@ namespace SimpleInjector.Extras.DynamicProxy.Tests
         }
 
         [Fact]
+        public void WhenMultiInstance()
+        {
+            var container = new Container();
+            container.InterceptWith(x => true,
+                () => new IInterceptor[] {new IncrementInterceptor(), new DoubleInterceptor()});
+            container.Register<Target>();
+            container.Verify();
+
+            var instance = container.GetInstance<Target>();
+            Assert.Equal(5, instance.Increment(1));
+        }
+
+        [Fact]
         public void WhenNotWeaving()
         {
             var container = new Container();
             container.Register<Target>();
-            container.InterceptWith(x => false, () => new IncrementInterceptor());
+            container.InterceptWith(x => false, () => new IInterceptor[] { new IncrementInterceptor() });
             container.Verify();
 
             var instance = container.GetInstance<Target>();
@@ -41,6 +54,15 @@ namespace SimpleInjector.Extras.DynamicProxy.Tests
             {
                 invocation.Proceed();
                 invocation.ReturnValue = ((int)invocation.ReturnValue) + 1;
+            }
+        }
+
+        public class DoubleInterceptor : IInterceptor
+        {
+            public void Intercept(IInvocation invocation)
+            {
+                invocation.Proceed();
+                invocation.ReturnValue = ((int)invocation.ReturnValue) * 2;
             }
         }
 

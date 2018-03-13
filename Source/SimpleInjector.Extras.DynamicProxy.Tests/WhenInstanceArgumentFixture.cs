@@ -8,7 +8,7 @@ using Xunit;
 
 namespace SimpleInjector.Extras.DynamicProxy.Tests
 {
-    public class WhenPassingInstanceAsArgumentFixture
+    public class WhenInstanceArgumentFixture
     {
         [Fact]
         public void WhenSingleInstance()

@@ -8,14 +8,15 @@ using Xunit;
 
 namespace SimpleInjector.Extras.DynamicProxy.Tests
 {
-    public class WhenPassingCreateInterceptorArrayFuncAsArgumentFixture
+    public class WhenTypeArgumentFixture
     {
         [Fact]
         public void WhenSingleInstance()
         {
             var container = new Container();
-            container.InterceptWith(x => true, () => new IInterceptor[] {new IncrementInterceptor()});
+            container.InterceptWith(x => x == typeof(Target), typeof(IncrementInterceptor));
             container.Register<Target>();
+            container.Register<IncrementInterceptor>();
             container.Verify();
 
             var instance = container.GetInstance<Target>();
@@ -26,9 +27,10 @@ namespace SimpleInjector.Extras.DynamicProxy.Tests
         public void WhenMultiInstance()
         {
             var container = new Container();
-            container.InterceptWith(x => true,
-                () => new IInterceptor[] {new IncrementInterceptor(), new DoubleInterceptor()});
+            container.InterceptWith(x => x == typeof(Target), typeof(IncrementInterceptor), typeof(DoubleInterceptor));
             container.Register<Target>();
+            container.Register<IncrementInterceptor>();
+            container.Register<DoubleInterceptor>();
             container.Verify();
 
             var instance = container.GetInstance<Target>();
@@ -40,13 +42,19 @@ namespace SimpleInjector.Extras.DynamicProxy.Tests
         {
             var container = new Container();
             container.Register<Target>();
-            container.InterceptWith(x => false, () => new IInterceptor[] { new IncrementInterceptor() });
+            container.InterceptWith(x => false, typeof(IncrementInterceptor));
             container.Verify();
 
             var instance = container.GetInstance<Target>();
             Assert.Equal(2, instance.Increment(1));
         }
 
+        [Fact]
+        public void WhenNotInterceptorTypeWeaving()
+        {
+            var container = new Container();
+            Assert.Throws<ArgumentException>(() => container.InterceptWith(x => x == typeof(Target), typeof(NotInterceptorType)));
+        }
 
         public class IncrementInterceptor : IInterceptor
         {
@@ -64,6 +72,10 @@ namespace SimpleInjector.Extras.DynamicProxy.Tests
                 invocation.Proceed();
                 invocation.ReturnValue = ((int)invocation.ReturnValue) * 2;
             }
+        }
+
+        public class NotInterceptorType
+        {
         }
 
         public class Target
