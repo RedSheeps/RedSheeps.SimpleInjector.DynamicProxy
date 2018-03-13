@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="WhenMethodTypeParameterFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WhenPassingCreateInterceptorFuncAsArgumentFixture.cs" />
     <Compile Include="WhenPassingInstanceAsArgumentFixture.cs" />
     <Compile Include="WhenPassingTypeAsArgumentFixture.cs" />
   </ItemGroup>
