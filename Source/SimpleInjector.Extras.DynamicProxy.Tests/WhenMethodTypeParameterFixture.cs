@@ -49,6 +49,14 @@ namespace SimpleInjector.Extras.DynamicProxy.Tests
             Assert.Equal(2, instance.Increment(1));
         }
 
+        [Fact]
+        public void WhenNotRegisterdInterceptor()
+        {
+            var container = new Container();
+            container.InterceptWith<IncrementInterceptor>(x => true);
+            container.Register<NotImplementInterface>();
+            Assert.Throws<InvalidOperationException>(() => container.Verify());
+        }
 
         public class IncrementInterceptor : IInterceptor
         {

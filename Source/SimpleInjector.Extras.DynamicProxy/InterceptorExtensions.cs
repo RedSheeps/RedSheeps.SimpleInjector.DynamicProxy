@@ -72,8 +72,23 @@ namespace SimpleInjector.Extras.DynamicProxy
             var interceptWith =
                 new InterceptionHelper(
                     predicate,
+                    e => Expression.NewArrayInit(
+                        typeof(IInterceptor),
+                        Expression.Invoke(
+                            Expression.Constant(interceptorCreator),
+                            Expression.Constant(e))));
+
+            container.ExpressionBuilt += interceptWith.OnExpressionBuilt;
+        }
+
+        public static void InterceptWith(
+            this Container container, Predicate<Type> predicate, Func<ExpressionBuiltEventArgs, IInterceptor[]> interceptorsCreator)
+        {
+            var interceptWith =
+                new InterceptionHelper(
+                    predicate,
                     e => Expression.Invoke(
-                        Expression.Constant(interceptorCreator),
+                        Expression.Constant(interceptorsCreator),
                         Expression.Constant(e)));
 
             container.ExpressionBuilt += interceptWith.OnExpressionBuilt;
