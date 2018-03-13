@@ -15,8 +15,7 @@ namespace SimpleInjector.Extras.DynamicProxy.Tests
         {
             var container = new Container();
             container.Register<IncrementInterceptor>();
-            container.InterceptWith<IncrementInterceptor>(
-                x => x != typeof(IncrementInterceptor));
+            container.InterceptWith<IncrementInterceptor>(x => x != typeof(IncrementInterceptor));
             container.Register<NotImplementInterface>();
             container.Verify();
 
@@ -30,8 +29,7 @@ namespace SimpleInjector.Extras.DynamicProxy.Tests
             var container = new Container();
             container.Register<IncrementInterceptor>();
             container.Register<IInterface, ImplementInterface>();
-            container.InterceptWith<IncrementInterceptor>(
-                x => x != typeof(IncrementInterceptor));
+            container.InterceptWith<IncrementInterceptor>(x => x != typeof(IncrementInterceptor));
             container.Verify();
 
             var instance = container.GetInstance<IInterface>();

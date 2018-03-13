@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
@@ -15,12 +16,32 @@ namespace SimpleInjector.Extras.DynamicProxy
         {
             container.Options.ConstructorResolutionBehavior.GetConstructor(typeof(TInterceptor));
 
-            var interceptWith = new InterceptionHelper()
+            var interceptWith =
+                new InterceptionHelper(predicate, e => BuildInterceptorExpressions(container, typeof(TInterceptor)));
+
+            container.ExpressionBuilt += interceptWith.OnExpressionBuilt;
+        }
+
+        public static void InterceptWith(
+            this Container container, Predicate<Type> predicate, params IInterceptor[] interceptors)
+        {
+            var interceptWith =
+                new InterceptionHelper(predicate, e => Expression.Constant(interceptors));
+
+            container.ExpressionBuilt += interceptWith.OnExpressionBuilt;
+        }
+
+        public static void InterceptWith(
+            this Container container, Predicate<Type> predicate, params Type[] interceptors)
+        {
+            foreach (var interceptor in interceptors)
             {
-                BuildInterceptorExpression =
-                    e => BuildInterceptorExpression<TInterceptor>(container),
-                Predicate = predicate
-            };
+                if (interceptor.GetTypeInfo().ImplementedInterfaces.All(interfaceType => interfaceType != typeof(IInterceptor)))
+                    throw new ArgumentException($"{interceptor} is not implemant {typeof(IInterceptor)}");
+            }
+
+            var interceptWith =
+                new InterceptionHelper(predicate, e => BuildInterceptorExpressions(container, interceptors));
 
             container.ExpressionBuilt += interceptWith.OnExpressionBuilt;
         }
@@ -28,73 +49,66 @@ namespace SimpleInjector.Extras.DynamicProxy
         public static void InterceptWith(
             this Container container, Predicate<Type> predicate, Func<IInterceptor> interceptorCreator)
         {
-            var interceptWith = new InterceptionHelper()
-            {
-                BuildInterceptorExpression =
-                    e => Expression.Invoke(Expression.Constant(interceptorCreator)),
-                Predicate = predicate
-            };
-
+            var interceptWith = 
+                new InterceptionHelper(predicate, e => Expression.Invoke(Expression.Constant(interceptorCreator)));
             container.ExpressionBuilt += interceptWith.OnExpressionBuilt;
         }
 
         public static void InterceptWith(
             this Container container, Predicate<Type> predicate, Func<ExpressionBuiltEventArgs, IInterceptor> interceptorCreator)
         {
-            var interceptWith = new InterceptionHelper()
-            {
-                BuildInterceptorExpression = e => Expression.Invoke(
-                    Expression.Constant(interceptorCreator),
-                    Expression.Constant(e)),
-                Predicate = predicate
-            };
+            var interceptWith =
+                new InterceptionHelper(
+                    predicate,
+                    e => Expression.Invoke(
+                        Expression.Constant(interceptorCreator),
+                        Expression.Constant(e)));
 
             container.ExpressionBuilt += interceptWith.OnExpressionBuilt;
         }
 
-        public static void InterceptWith(
-            this Container container, Predicate<Type> predicate, IInterceptor interceptor)
+        private static Expression BuildInterceptorExpression(Container container, Type interceptorType)
         {
-            var interceptWith = new InterceptionHelper()
-            {
-                BuildInterceptorExpression = e => Expression.Constant(interceptor),
-                Predicate = predicate
-            };
-
-            container.ExpressionBuilt += interceptWith.OnExpressionBuilt;
-        }
-
-        private static Expression BuildInterceptorExpression<TInterceptor>(
-            Container container)
-            where TInterceptor : class
-        {
-            var interceptorRegistration = container.GetRegistration(typeof(TInterceptor));
+            var interceptorRegistration = container.GetRegistration(interceptorType);
 
             if (interceptorRegistration == null)
             {
                 // This will throw an ActivationException
-                container.GetInstance<TInterceptor>();
+                container.GetInstance(interceptorType);
             }
 
             return interceptorRegistration.BuildExpression();
+        }
+
+        private static Expression BuildInterceptorExpressions(Container container, params Type[] interceptorTypes)
+        {
+            return Expression.NewArrayInit(
+                typeof(IInterceptor),
+                interceptorTypes.Select(x => BuildInterceptorExpression(container, x)).ToArray());
         }
 
         private class InterceptionHelper
         {
             private static readonly ProxyGenerator Generator = new ProxyGenerator();
 
-            private static readonly Func<Type, object, IInterceptor, object> CreateClassProxyWithTarget =
+            private static readonly Func<Type, object, IInterceptor[], object> CreateClassProxyWithTarget =
                 (p, t, i) => Generator.CreateClassProxyWithTarget(p, t, i);
 
-            private static readonly Func<Type, object, IInterceptor, object> CreateInterfaceProxyWithTarget =
+            private static readonly Func<Type, object, IInterceptor[], object> CreateInterfaceProxyWithTarget =
                 (p, t, i) => Generator.CreateInterfaceProxyWithTarget(p, t, i);
 
-            internal Func<ExpressionBuiltEventArgs, Expression> BuildInterceptorExpression { private get; set; }
-            internal Predicate<Type> Predicate { private get; set; }
+            private readonly Predicate<Type> _predicate;
+            private readonly Func<ExpressionBuiltEventArgs, Expression> _buildInterceptorExpression;
+
+            public InterceptionHelper(Predicate<Type> predicate, Func<ExpressionBuiltEventArgs, Expression> buildInterceptorExpression)
+            {
+                _predicate = predicate;
+                _buildInterceptorExpression = buildInterceptorExpression;
+            }
 
             public void OnExpressionBuilt(object sender, ExpressionBuiltEventArgs e)
             {
-                if (Predicate(e.RegisteredServiceType))
+                if (_predicate(e.RegisteredServiceType))
                 {
                     e.Expression = BuildProxyExpression(e);
                 }
@@ -102,7 +116,7 @@ namespace SimpleInjector.Extras.DynamicProxy
 
             private Expression BuildProxyExpression(ExpressionBuiltEventArgs e)
             {
-                var expr = BuildInterceptorExpression(e);
+                var expr = _buildInterceptorExpression(e);
 
                 var createProxy =
                     e.RegisteredServiceType.GetTypeInfo().IsInterface ?
