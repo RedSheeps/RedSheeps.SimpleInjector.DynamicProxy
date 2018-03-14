@@ -1,5 +1,7 @@
 # SimpleInjector.Extras.DynamicProxy
 
+## About
+
 SimpleInjector extension for enabling AOP in conjunction with Castle. A library for easily applying DynamicProxy of Catsle.Core to SimpleInjector.
 
 ```cs
@@ -37,3 +39,7 @@ container.InterceptWith(x => true, () => new IInterceptor[] {new FirstIntercepto
 container.InterceptWith(x => true, e => new FirstInterceptor());
 container.InterceptWith(x => true, e => new IInterceptor[] {new FirstInterceptor(), new SecondInterceptor()});
 ```
+
+## NuGet
+
+https://www.nuget.org/packages/SimpleInjector.Extras.DynamicProxy/
