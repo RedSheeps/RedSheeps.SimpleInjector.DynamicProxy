@@ -4,12 +4,25 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using Castle.DynamicProxy;
 
 namespace SimpleInjector.Extras.DynamicProxy
 {
     public static class InterceptorExtensions
     {
+        public static void Intercept<TInterface>(this Container container, params Type[] interceptors)
+        {
+            var interceptWith =
+                new InterceptionHelper(
+                    type => type == typeof(TInterface) 
+                        || type.GetTypeInfo().ImplementedInterfaces.Any(x => x == typeof(TInterface)), 
+                    e => BuildInterceptorExpressions(container, interceptors), 
+                    type => typeof(TInterface));
+
+            container.ExpressionBuilt += interceptWith.OnExpressionBuilt;
+        }
+
         public static void InterceptWith<TInterceptor>(
             this Container container, Predicate<Type> predicate)
             where TInterceptor : class, IInterceptor
@@ -126,11 +139,21 @@ namespace SimpleInjector.Extras.DynamicProxy
 
             private readonly Predicate<Type> _predicate;
             private readonly Func<ExpressionBuiltEventArgs, Expression> _buildInterceptorExpression;
+            private readonly Func<Type, Type> _getProxyType;
 
             public InterceptionHelper(Predicate<Type> predicate, Func<ExpressionBuiltEventArgs, Expression> buildInterceptorExpression)
+                : this(predicate, buildInterceptorExpression, type => type)
+            {
+            }
+
+            public InterceptionHelper(
+                Predicate<Type> predicate, 
+                Func<ExpressionBuiltEventArgs, Expression> buildInterceptorExpression,
+                Func<Type, Type> getProxyType)
             {
                 _predicate = predicate;
                 _buildInterceptorExpression = buildInterceptorExpression;
+                _getProxyType = getProxyType;
             }
 
             public void OnExpressionBuilt(object sender, ExpressionBuiltEventArgs e)
@@ -145,17 +168,18 @@ namespace SimpleInjector.Extras.DynamicProxy
             {
                 var expr = _buildInterceptorExpression(e);
 
+                var proxyType = _getProxyType(e.RegisteredServiceType);
                 var createProxy =
-                    e.RegisteredServiceType.GetTypeInfo().IsInterface ?
+                    proxyType.GetTypeInfo().IsInterface ?
                     CreateInterfaceProxyWithTarget :
                     CreateClassProxyWithTarget;
 
                 return Expression.Convert(
                     Expression.Invoke(Expression.Constant(createProxy),
-                        Expression.Constant(e.RegisteredServiceType, typeof(Type)),
+                        Expression.Constant(proxyType, typeof(Type)),
                         e.Expression,
                         expr),
-                    e.RegisteredServiceType);
+                    proxyType);
             }
         }
 
