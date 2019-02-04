@@ -6,13 +6,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9423555B-A1E1-4EB0-8776-B1E405A88D72}</ProjectGuid>
+    <ProjectGuid>{29561CAA-ACEE-4549-9E36-EDC323809325}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SimpleInjector.Extras.DynamicProxy.Tests</RootNamespace>
     <AssemblyName>SimpleInjector.Extras.DynamicProxy.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -41,8 +42,14 @@
       <HintPath>..\packages\SimpleInjector.4.4.3\lib\net45\SimpleInjector.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -56,31 +63,44 @@
       <HintPath>..\packages\xunit.assert.2.4.1\lib\netstandard1.1\xunit.assert.dll</HintPath>
     </Reference>
     <Reference Include="xunit.core, Version=2.4.1.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\packages\xunit.extensibility.core.2.4.1\lib\net452\xunit.core.dll</HintPath>
+      <HintPath>..\packages\xunit.extensibility.core.2.4.1\lib\netstandard1.1\xunit.core.dll</HintPath>
     </Reference>
-    <Reference Include="xunit.execution.desktop, Version=2.4.1.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\packages\xunit.extensibility.execution.2.4.1\lib\net452\xunit.execution.desktop.dll</HintPath>
+    <Reference Include="xunit.execution.dotnet, Version=2.4.1.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <HintPath>..\packages\xunit.extensibility.execution.2.4.1\lib\netstandard1.1\xunit.execution.dotnet.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="InterceptInterfaceFixture.cs" />
-    <Compile Include="WhenCreateArrayWithEventArgsFuncArgumentFixture.cs" />
-    <Compile Include="WhenCreateWithEventArgsFuncArgumentFixture.cs" />
-    <Compile Include="WhenMethodTypeParameterFixture.cs" />
+    <Compile Include="..\SimpleInjector.Extras.DynamicProxy.Tests\InterceptInterfaceFixture.cs">
+      <Link>InterceptInterfaceFixture.cs</Link>
+    </Compile>
+    <Compile Include="..\SimpleInjector.Extras.DynamicProxy.Tests\WhenCreateArrayFuncArgumentFixture.cs">
+      <Link>WhenCreateArrayFuncArgumentFixture.cs</Link>
+    </Compile>
+    <Compile Include="..\SimpleInjector.Extras.DynamicProxy.Tests\WhenCreateArrayWithEventArgsFuncArgumentFixture.cs">
+      <Link>WhenCreateArrayWithEventArgsFuncArgumentFixture.cs</Link>
+    </Compile>
+    <Compile Include="..\SimpleInjector.Extras.DynamicProxy.Tests\WhenCreateFuncArgumentFixture.cs">
+      <Link>WhenCreateFuncArgumentFixture.cs</Link>
+    </Compile>
+    <Compile Include="..\SimpleInjector.Extras.DynamicProxy.Tests\WhenCreateWithEventArgsFuncArgumentFixture.cs">
+      <Link>WhenCreateWithEventArgsFuncArgumentFixture.cs</Link>
+    </Compile>
+    <Compile Include="..\SimpleInjector.Extras.DynamicProxy.Tests\WhenInstanceArgumentFixture.cs">
+      <Link>WhenInstanceArgumentFixture.cs</Link>
+    </Compile>
+    <Compile Include="..\SimpleInjector.Extras.DynamicProxy.Tests\WhenMethodTypeParameterFixture.cs">
+      <Link>WhenMethodTypeParameterFixture.cs</Link>
+    </Compile>
+    <Compile Include="..\SimpleInjector.Extras.DynamicProxy.Tests\WhenTypeArgumentFixture.cs">
+      <Link>WhenTypeArgumentFixture.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WhenCreateArrayFuncArgumentFixture.cs" />
-    <Compile Include="WhenCreateFuncArgumentFixture.cs" />
-    <Compile Include="WhenInstanceArgumentFixture.cs" />
-    <Compile Include="WhenTypeArgumentFixture.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SimpleInjector.Extras.DynamicProxy\SimpleInjector.Extras.DynamicProxy.csproj">
-      <Project>{1d24fa80-601b-4ca6-9616-204d39ea8476}</Project>
-      <Name>SimpleInjector.Extras.DynamicProxy</Name>
+    <ProjectReference Include="..\SimpleInjector.Extras.DynamicProxy.Net45\SimpleInjector.Extras.DynamicProxy.Net45.csproj">
+      <Project>{7bda20a4-a1c9-4ed3-8391-028fdb0a31dd}</Project>
+      <Name>SimpleInjector.Extras.DynamicProxy.Net45</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

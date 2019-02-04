@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleInjector.Extras.Dynam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleInjector.Extras.DynamicProxy.Tests", "SimpleInjector.Extras.DynamicProxy.Tests\SimpleInjector.Extras.DynamicProxy.Tests.csproj", "{9423555B-A1E1-4EB0-8776-B1E405A88D72}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleInjector.Extras.DynamicProxy.Net45", "SimpleInjector.Extras.DynamicProxy.Net45\SimpleInjector.Extras.DynamicProxy.Net45.csproj", "{7BDA20A4-A1C9-4ED3-8391-028FDB0A31DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleInjector.Extras.DynamicProxy.Net45.Tests", "SimpleInjector.Extras.DynamicProxy.Net45.Tests\SimpleInjector.Extras.DynamicProxy.Net45.Tests.csproj", "{29561CAA-ACEE-4549-9E36-EDC323809325}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{9423555B-A1E1-4EB0-8776-B1E405A88D72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9423555B-A1E1-4EB0-8776-B1E405A88D72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9423555B-A1E1-4EB0-8776-B1E405A88D72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BDA20A4-A1C9-4ED3-8391-028FDB0A31DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BDA20A4-A1C9-4ED3-8391-028FDB0A31DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BDA20A4-A1C9-4ED3-8391-028FDB0A31DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BDA20A4-A1C9-4ED3-8391-028FDB0A31DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29561CAA-ACEE-4549-9E36-EDC323809325}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29561CAA-ACEE-4549-9E36-EDC323809325}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29561CAA-ACEE-4549-9E36-EDC323809325}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29561CAA-ACEE-4549-9E36-EDC323809325}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
