@@ -1,4 +1,4 @@
-# SimpleInjector.Extras.DynamicProxy
+# RedSheeps.SimpleInjector.DynamicProxy
 
 ## About
 
