@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net45;netstandard1.3;netstandard2.0</TargetFrameworks>
+    <Authors>RedSheeps</Authors>
+    <Description>SimpleInjector extension for enabling AOP in conjunction with Castle.</Description>
+    <Copyright>Copyright 2019 RedSheeps</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/RedSheeps/RedSheeps.SimpleInjector.DynamicProxy</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/RedSheeps/RedSheeps.SimpleInjector.DynamicProxy</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>SimpleInjector aop Castle DynamicProxy</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <PackageReference Include="Castle.Core" Version="4.4.0" />
+    <PackageReference Include="SimpleInjector" Version="4.5.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
+    <PackageReference Include="Castle.Core" Version="4.4.0" />
+    <PackageReference Include="SimpleInjector" Version="4.5.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageReference Include="Castle.Core" Version="4.4.0" />
+    <PackageReference Include="SimpleInjector" Version="4.5.1" />
+  </ItemGroup>
+</Project>

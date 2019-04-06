@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>SimpleInjector.Extras.DynamicProxy</id>
+    <version>1.2.0</version>
+    <title>SimpleInjector.Extras.DynamicProxy</title>
+    <authors>Atsushi Nakamura</authors>
+    <owners>Atsushi Nakamura</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/nuitsjp/SimpleInjector.Extras.DynamicProxy/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/nuitsjp/SimpleInjector.Extras.DynamicProxy</projectUrl>
+    <description>SimpleInjector extension for enabling AOP in conjunction with Castle.</description>
+    <releaseNotes>https://github.com/nuitsjp/SimpleInjector.Extras.DynamicProxy/releases</releaseNotes>
+    <copyright>Copyright 2018 Atsushi Nakamura</copyright>
+    <tags>SimpleInjector aop Castle DynamicProxy</tags>
+    <dependencies>
+      <group targetFramework=".NETStandard1.3">
+        <dependency id="Castle.Core" version="4.3.1" exclude="Build,Analyzers" />
+        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
+        <dependency id="SimpleInjector" version="4.4.3" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETFramework4.5">
+        <dependency id="Castle.Core" version="4.3.1" exclude="Build,Analyzers" />
+        <dependency id="SimpleInjector" version="4.4.3" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

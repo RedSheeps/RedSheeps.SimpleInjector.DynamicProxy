@@ -4,20 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Castle.DynamicProxy;
+using SimpleInjector;
 using Xunit;
 
-namespace SimpleInjector.Extras.DynamicProxy.Tests
+namespace RedSheeps.SimpleInjector.DynamicProxy.Tests
 {
-    public class WhenCreateArrayWithEventArgsFuncArgumentFixture
+    public class WhenCreateWithEventArgsFuncArgumentFixture
     {
         [Fact]
-        public void WhenSingleInstance()
+        public void WhenWeaving()
         {
             var container = new Container();
             container.InterceptWith(x => true, e =>
             {
                 Assert.NotNull(e);
-                return new IInterceptor[] {new IncrementInterceptor()};
+                return new IncrementInterceptor();
             });
             container.Register<Target>();
             container.Verify();
@@ -27,24 +28,11 @@ namespace SimpleInjector.Extras.DynamicProxy.Tests
         }
 
         [Fact]
-        public void WhenMultiInstance()
-        {
-            var container = new Container();
-            container.InterceptWith(x => true,
-                _ => new IInterceptor[] { new IncrementInterceptor(), new DoubleInterceptor() });
-            container.Register<Target>();
-            container.Verify();
-
-            var instance = container.GetInstance<Target>();
-            Assert.Equal(5, instance.Increment(1));
-        }
-
-        [Fact]
         public void WhenNotWeaving()
         {
             var container = new Container();
             container.Register<Target>();
-            container.InterceptWith(x => false, _ => new IInterceptor[] { new IncrementInterceptor() });
+            container.InterceptWith(x => false, _ => new IncrementInterceptor());
             container.Verify();
 
             var instance = container.GetInstance<Target>();
@@ -57,16 +45,7 @@ namespace SimpleInjector.Extras.DynamicProxy.Tests
             public void Intercept(IInvocation invocation)
             {
                 invocation.Proceed();
-                invocation.ReturnValue = ((int)invocation.ReturnValue) + 1;
-            }
-        }
-
-        public class DoubleInterceptor : IInterceptor
-        {
-            public void Intercept(IInvocation invocation)
-            {
-                invocation.Proceed();
-                invocation.ReturnValue = ((int)invocation.ReturnValue) * 2;
+                invocation.ReturnValue = (int)invocation.ReturnValue + 1;
             }
         }
 

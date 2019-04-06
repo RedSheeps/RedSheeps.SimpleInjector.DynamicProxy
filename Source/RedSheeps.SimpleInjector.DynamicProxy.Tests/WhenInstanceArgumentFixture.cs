@@ -4,17 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Castle.DynamicProxy;
+using SimpleInjector;
 using Xunit;
 
-namespace SimpleInjector.Extras.DynamicProxy.Tests
+namespace RedSheeps.SimpleInjector.DynamicProxy.Tests
 {
-    public class WhenCreateArrayFuncArgumentFixture
+    public class WhenInstanceArgumentFixture
     {
         [Fact]
         public void WhenSingleInstance()
         {
             var container = new Container();
-            container.InterceptWith(x => true, () => new IInterceptor[] {new IncrementInterceptor()});
+            container.InterceptWith(x => true, new IncrementInterceptor());
             container.Register<Target>();
             container.Verify();
 
@@ -26,8 +27,7 @@ namespace SimpleInjector.Extras.DynamicProxy.Tests
         public void WhenMultiInstance()
         {
             var container = new Container();
-            container.InterceptWith(x => true,
-                () => new IInterceptor[] {new IncrementInterceptor(), new DoubleInterceptor()});
+            container.InterceptWith(x => true, new IncrementInterceptor(), new DoubleInterceptor());
             container.Register<Target>();
             container.Verify();
 
@@ -40,7 +40,7 @@ namespace SimpleInjector.Extras.DynamicProxy.Tests
         {
             var container = new Container();
             container.Register<Target>();
-            container.InterceptWith(x => false, () => new IInterceptor[] { new IncrementInterceptor() });
+            container.InterceptWith(x => false, new IncrementInterceptor());
             container.Verify();
 
             var instance = container.GetInstance<Target>();
@@ -53,7 +53,7 @@ namespace SimpleInjector.Extras.DynamicProxy.Tests
             public void Intercept(IInvocation invocation)
             {
                 invocation.Proceed();
-                invocation.ReturnValue = ((int)invocation.ReturnValue) + 1;
+                invocation.ReturnValue = (int)invocation.ReturnValue + 1;
             }
         }
 
@@ -62,7 +62,7 @@ namespace SimpleInjector.Extras.DynamicProxy.Tests
             public void Intercept(IInvocation invocation)
             {
                 invocation.Proceed();
-                invocation.ReturnValue = ((int)invocation.ReturnValue) * 2;
+                invocation.ReturnValue = (int)invocation.ReturnValue * 2;
             }
         }
 

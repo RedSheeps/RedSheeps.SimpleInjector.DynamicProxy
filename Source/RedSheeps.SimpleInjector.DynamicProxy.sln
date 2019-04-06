@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28729.10
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedSheeps.SimpleInjector.DynamicProxy", "RedSheeps.SimpleInjector.DynamicProxy\RedSheeps.SimpleInjector.DynamicProxy.csproj", "{7622D372-C967-403E-86BA-C073B795B485}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedSheeps.SimpleInjector.DynamicProxy.Tests", "RedSheeps.SimpleInjector.DynamicProxy.Tests\RedSheeps.SimpleInjector.DynamicProxy.Tests.csproj", "{E1605A3D-B7CE-437C-BB93-5B2D2339184D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7622D372-C967-403E-86BA-C073B795B485}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7622D372-C967-403E-86BA-C073B795B485}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7622D372-C967-403E-86BA-C073B795B485}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7622D372-C967-403E-86BA-C073B795B485}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1605A3D-B7CE-437C-BB93-5B2D2339184D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1605A3D-B7CE-437C-BB93-5B2D2339184D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1605A3D-B7CE-437C-BB93-5B2D2339184D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1605A3D-B7CE-437C-BB93-5B2D2339184D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {41CFD19A-FEB7-43AA-84BA-52DB9F015235}
+	EndGlobalSection
+EndGlobal

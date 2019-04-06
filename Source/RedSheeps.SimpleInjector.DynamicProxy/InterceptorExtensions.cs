@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 using Castle.DynamicProxy;
+using SimpleInjector;
 
-namespace SimpleInjector.Extras.DynamicProxy
+namespace RedSheeps.SimpleInjector.DynamicProxy
 {
     public static class InterceptorExtensions
     {

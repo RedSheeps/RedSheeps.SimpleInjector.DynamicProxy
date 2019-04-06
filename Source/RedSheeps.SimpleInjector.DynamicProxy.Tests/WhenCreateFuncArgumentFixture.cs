@@ -4,21 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Castle.DynamicProxy;
+using SimpleInjector;
 using Xunit;
 
-namespace SimpleInjector.Extras.DynamicProxy.Tests
+namespace RedSheeps.SimpleInjector.DynamicProxy.Tests
 {
-    public class WhenCreateWithEventArgsFuncArgumentFixture
+    public class WhenCreateFuncArgumentFixture
     {
         [Fact]
         public void WhenWeaving()
         {
             var container = new Container();
-            container.InterceptWith(x => true, e =>
-            {
-                Assert.NotNull(e);
-                return new IncrementInterceptor();
-            });
+            container.InterceptWith(x => true, () => new IncrementInterceptor());
             container.Register<Target>();
             container.Verify();
 
@@ -31,7 +28,7 @@ namespace SimpleInjector.Extras.DynamicProxy.Tests
         {
             var container = new Container();
             container.Register<Target>();
-            container.InterceptWith(x => false, _ => new IncrementInterceptor());
+            container.InterceptWith(x => false, () => new IncrementInterceptor());
             container.Verify();
 
             var instance = container.GetInstance<Target>();
@@ -44,7 +41,7 @@ namespace SimpleInjector.Extras.DynamicProxy.Tests
             public void Intercept(IInvocation invocation)
             {
                 invocation.Proceed();
-                invocation.ReturnValue = ((int)invocation.ReturnValue) + 1;
+                invocation.ReturnValue = (int)invocation.ReturnValue + 1;
             }
         }
 
